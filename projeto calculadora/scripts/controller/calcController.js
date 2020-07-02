@@ -34,10 +34,23 @@ class CalcController {
         this._operation.pop();
     }
 
-    addOperation(value){
-        this._operation.push(value);
+    getLastOperation(){
+        return this._operation[this._operation.length - 1];
+    }
 
-        console.log(this._operation)
+    addOperation(value){
+
+        if (isNaN(this.getLastOperation())){
+            //string - to no 9:21
+        } else {
+            let newValue = this.getLastOperation().toString() + value.toString();
+            this._operation.push(newValue);
+            console.log(this._operation)
+        }
+   
+        
+
+        
     }
 
     setError(){
