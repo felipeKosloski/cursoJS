@@ -70,6 +70,9 @@ class CalcController {
             case 'igual':
                 //this.();
                 break;
+            case 'ponto':
+                //this.();
+                break;
             case '0':
             case '1':
             case '2':
