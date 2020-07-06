@@ -11,6 +11,7 @@ class CalcController {
         this._timeEl = document.querySelector("#hora");  
         this.initialize();
         this.initButtonsEvents();
+
     }
 
     initialize(){
@@ -27,18 +28,25 @@ class CalcController {
     }
 
     addEventListenerAll(element, events, fn){
+
         events.split(' ').forEach(event => {
+
             element.addEventListener(event, fn, false);
+
         });
     }
 
     clearAll(){
+
         this._operation = [];
         this.setLastNumberToDisplay();
+
     }
     clearEntry(){
+
         this._operation.pop();
         this.setLastNumberToDisplay();
+        
     }
 
     getLastOperation(){
