@@ -11,6 +11,7 @@ class CalcController {
         this._timeEl = document.querySelector("#hora");  
         this.initialize();
         this.initButtonsEvents();
+        this.initKeyBoard();
 
     }
 
@@ -39,6 +40,8 @@ class CalcController {
     clearAll(){
 
         this._operation = [];
+        this._lastNumber = '';
+        this._lastOperation = '';
         this.setLastNumberToDisplay();
 
     }
@@ -151,14 +154,71 @@ class CalcController {
         
     }
 
+    addDot(){
+
+        let lastOperation = this.getLastOperation();
+
+        if(typeof lastOperation === 'string' && lastOperation.split('').indexOf('.') > -1) return;
+
+        if (this.isOperator(lastOperation) || !lastOperation) {
+            this.pushOperation('0.');
+        } else {
+            this.setLastOperation(lastOperation.toString() + '.');
+        }
+
+        this.setLastNumberToDisplay();
+    }
+
+    initKeyBoard() {
+
+        document.addEventListener('keyup', e=> {
+
+            switch (e.key) {
+                case 'Escape':
+                    this.clearAll();
+                    break;
+                case 'Backspace':
+                    this.clearEntry();
+                    break;
+                case '+':
+                case '-':
+                case '/':
+                case '*':
+                case '%':
+                    this.addOperation(e.key);
+                    break;  
+                case 'Enter':
+                case '=':
+                    this.calc();
+                    break;
+                case '.':
+                case ',':
+                    this.addDot();
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    this.addOperation(parseInt(e.key));
+                    break;
+            }
+
+        });
+
+    }
+
     addOperation(value){
 
         if (isNaN(this.getLastOperation())){
         
             if (this.isOperator(value)){
                 this.setLastOperation(value);
-            } else if(isNaN(value)) {
-                console.log(value);
             } else {
 
                 this.pushOperation(value);
@@ -177,7 +237,7 @@ class CalcController {
             } else {
 
                 let newValue = this.getLastOperation().toString() + value.toString();
-                this.setLastOperation(parseInt(newValue));  
+                this.setLastOperation(newValue);  
                 
                 this.setLastNumberToDisplay();
 
@@ -221,7 +281,7 @@ class CalcController {
                 this.calc();
                 break;
             case 'ponto':
-                this.addOperation('.');
+                this.addDot();
                 break;
             case '0':
             case '1':
