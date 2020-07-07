@@ -2,6 +2,9 @@ class CalcController {
     
     constructor(){
 
+
+        this._audio = new Audio('click.mp3');
+        this._audioOnOff = false;
         this._lastOperation = '';
         this._lastNumber = '';
         this._operation = [];
@@ -26,6 +29,35 @@ class CalcController {
         }, 1000);
 
         this.setLastNumberToDisplay();
+        this.pasteFromClipBoard();
+
+        document.querySelectorAll('.btn-ac').forEach(btn=>{
+
+            btn.addEventListener('dblclick', e=>{
+
+                this.toggleAudio();
+
+            });
+
+        });
+
+    }
+
+    toggleAudio(){
+
+        this._audioOnOff = !this._audioOnOff;
+
+    }
+
+    playAudio() {
+
+        if (this._audioOnOff) {
+
+            this._audio.currentTime = 0;
+            this._audio.play();
+
+        }
+
     }
 
     addEventListenerAll(element, events, fn){
@@ -77,7 +109,21 @@ class CalcController {
 
     getResult() {
 
-        return eval(this._operation.join(""));
+        try {
+
+            return eval(this._operation.join(""));
+
+        } catch (e) {
+            
+            setTimeout(()=>{
+                
+                this.setError();   
+
+            },1);
+            
+
+        }
+        
 
     }
 
@@ -169,9 +215,36 @@ class CalcController {
         this.setLastNumberToDisplay();
     }
 
+    copyToClipBoard(){
+
+        let input = document.createElement("input");
+
+        input.value = this.displayCalc;
+
+        document.body.appendChild(input);
+
+        input.select();
+
+        document.execCommand("Copy");
+    }
+
+    pasteFromClipBoard(){
+
+        document.addEventListener('paste', e => {
+
+            let text = e.clipboardData.getData('Text');
+
+            this.displayCalc = parseFloat(text);
+        
+        })
+
+    }
+
     initKeyBoard() {
 
         document.addEventListener('keyup', e=> {
+
+            this.playAudio();
 
             switch (e.key) {
                 case 'Escape':
@@ -206,6 +279,11 @@ class CalcController {
                 case '8':
                 case '9':
                     this.addOperation(parseInt(e.key));
+                    break;
+                case 'c':
+                    if(e.ctrlKey){
+                        this.copyToClipBoard();
+                    }
                     break;
             }
 
@@ -255,6 +333,9 @@ class CalcController {
     }
 
     execBtn(value){
+
+        this.playAudio();
+
         switch (value) {
             case 'ac':
                 this.clearAll();
@@ -344,9 +425,18 @@ class CalcController {
 
         return this._displayCalcEl.innerHTML;
     }
+
     set displayCalc(value){
 
+        if (value.toString().length > 10) {
+
+            this.setError();
+            return false;
+        
+        }
+
         this._displayCalcEl.innerHTML = value;
+
     }
 
 
