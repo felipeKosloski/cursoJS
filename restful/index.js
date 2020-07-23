@@ -1,15 +1,16 @@
-const http = require('http');
+const express = require('express');
+const consign = require('consign');
+const bodyParser = require('body-parser');
 
+let app = express();
 
-http.createServer((req, res)=>{
+app.use(bodyParser.urlencoded({ extended:false }))
+app.use(bodyParser.json())
 
-    console.log('URL:', req.url);
-    console.log('METHOD:', req.method);
+consign().include('routes').into(app);
 
-    res.end('ok');
-});
-
-http.Server.listen(3000, '127.0.0.1', ()=>{
+  
+app.listen(3000, '127.0.0.1', ()=>{
 
     console.log('rodando');
 
